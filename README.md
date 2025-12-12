@@ -4,6 +4,11 @@ Backend application for the InfraFix citizen reporting system, built with Spring
 
 ## 📱 Design Preview
 
+| Splash Screen | Login | Register |
+|:---:|:---:|:---:|
+| <img src="docs/images/splash.png" width="300" /> | <img src="docs/images/login.png" width="300" /> | <img src="docs/images/register.png" width="300" /> |
+| **Welcome**: Layar pembuka aplikasi. | **Sign In**: Masuk ke akun pengguna. | **Sign Up**: Pendaftaran akun baru. |
+
 | Home / Dashboard | Camera / Dokumentasi |
 |:---:|:---:|
 | <img src="docs/images/home.png" width="300" /> | <img src="docs/images/camera.png" width="300" /> |
