@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class InfrafixappApplication {
+public class Infrafixapp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(InfrafixappApplication.class, args);
+		SpringApplication.run(Infrafixapp.class, args);
 	}
 
 }
