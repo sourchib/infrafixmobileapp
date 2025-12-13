@@ -29,12 +29,12 @@ public class Report {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private ReportCategory category;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
     private ReportStatus status;
 
     private String address;
@@ -43,14 +43,14 @@ public class Report {
 
     private Double longitude;
 
+    private boolean isDataValid; // "Saya menyatakan data ini benar"
+
     private LocalDate incidentDate;
 
     // Simplification: Store image URLs directly in the Report table
     // Limiting to 3 images as per mockup "3 Lampiran"
     private String image1;
-
     private String image2;
-
     private String image3;
 
     @ManyToOne(fetch = FetchType.LAZY)

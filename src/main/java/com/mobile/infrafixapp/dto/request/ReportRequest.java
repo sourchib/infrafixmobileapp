@@ -5,20 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportRequest {
-    private String title;
+    private String fullName;
+    private String ktpNumber;
+    private java.time.LocalDate incidentDate;
+    private String category;
     private String description;
-    private ReportCategory category;
+    private String title; // Keeping it as it might be needed or derived
     private String address;
     private Double latitude;
     private Double longitude;
-
-    // Images handled separately in controller but logic might use this DTO if not
-    // using @RequestPart
+    private boolean isDataValid;
 }

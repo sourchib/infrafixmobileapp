@@ -26,9 +26,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String fullName;
 
-    @Column(unique = true)
-    private String ktpNumber;
-
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -45,6 +42,14 @@ public class User implements UserDetails {
 
     private Double longitude;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean termsAccepted;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean dataUsageAccepted;
+
+    private String ktpNumber;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
@@ -59,7 +64,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority(role.getName()));
     }
 
     @Override

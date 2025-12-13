@@ -10,5 +10,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponse {
+    private String status;
+    private String message;
     private String token;
+    private UserInfo user;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserInfo {
+        private Integer id_pengguna;
+        private String fullName;
+        private String email;
+        private String role;
+    }
 }

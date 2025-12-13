@@ -1,6 +1,6 @@
 # InfraFix App - Mobile Backend & Frontend Design
 
-Backend application for the InfraFix citizen reporting system, built with Spring Boot 3.3.0.
+Backend application for the InfraFix citizen reporting system, built with Spring Boot 3.4.10.
 
 ## 📱 Design Preview
 
@@ -46,6 +46,16 @@ Backend application for the InfraFix citizen reporting system, built with Spring
 *   **Spring Security + JWT** (Authentication)
 *   **Lombok**
 *   **JPA / Hibernate**
+    
+### 📦 Libraries & Dependencies
+*   **Spring Boot Starter Web**: RESTful API framework.
+*   **Spring Boot Starter Data JPA**: Database abstraction and O/R mapping.
+*   **Spring Boot Starter Security**: Authentication and access control.
+*   **Spring Boot Starter Validation**: Bean validation (JSR-380).
+*   **PostgreSQL Driver**: JDBC driver for PostgreSQL database.
+*   **Lombok**: Annotation-based boilerplate code reducer.
+*   **JJWT (Api, Impl, Jackson)**: JSON Web Token support for security.
+*   **Spring Boot Starter Test**: Integration and unit testing.
 
 ## 📂 Project Structure
 

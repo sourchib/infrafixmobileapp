@@ -18,8 +18,8 @@ public class ReportResponse {
     private Integer id;
     private String title;
     private String description;
-    private ReportCategory category;
-    private ReportStatus status;
+    private String category;
+    private String status;
     private String address;
     private Double latitude;
     private Double longitude;
