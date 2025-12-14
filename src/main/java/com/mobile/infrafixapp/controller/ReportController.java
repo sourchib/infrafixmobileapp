@@ -29,7 +29,8 @@ public class ReportController {
     }
 
     @GetMapping("/my")
-    @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('Citizen')")
+    // @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('Citizen')")
+    // - Allow all roles to see their own reports
     public ResponseEntity<List<ReportResponse>> getMyReports() {
         return ResponseEntity.ok(reportService.getMyReports());
     }
@@ -46,6 +47,14 @@ public class ReportController {
             @PathVariable Integer id,
             @RequestBody ReportStatusUpdateRequest request) { // For Admin/Tech
         return ResponseEntity.ok(reportService.updateReportStatus(id, request));
+    }
+
+    @PatchMapping("/{id}/status/{statusId}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyAuthority('Technician', 'Admin')")
+    public ResponseEntity<ReportResponse> updateStatusById(
+            @PathVariable Integer id,
+            @PathVariable Integer statusId) {
+        return ResponseEntity.ok(reportService.updateReportStatusById(id, statusId));
     }
 
     @GetMapping("/categories")

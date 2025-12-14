@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run specific unit test with Maven
+        run: mvn test -Dtest=go.id.bgn.nurtiflow.service.ProdukServiceTest
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/infrafixapp:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/infrafixapp
+            docker stop infrafixapp || true
+            docker rm infrafixapp || true
+            docker run -dp 8085:8080 --name infrafixapp --network jc-network -e SPRING_DATASOURCE_URL="jdbc:postgresql://postgres:5432/${{ secrets.DB_NAME }}" -e SPRING_DATASOURCE_USERNAME="${{ secrets.DB_USER }}" -e SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}" -e TZ=Asia/Jakarta ${{ secrets.DOCKER_USERNAME }}/infrafixapp

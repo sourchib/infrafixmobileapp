@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReportStatusUpdateRequest {
     private String status;
-    private String category;
+    private Object category;
 }

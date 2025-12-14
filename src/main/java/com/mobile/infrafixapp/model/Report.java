@@ -29,6 +29,9 @@ public class Report {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "category")
+    private String categoryName;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private ReportCategory category;
@@ -36,6 +39,9 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private ReportStatus status;
+
+    @Column(name = "status")
+    private String statusName;
 
     private String address;
 

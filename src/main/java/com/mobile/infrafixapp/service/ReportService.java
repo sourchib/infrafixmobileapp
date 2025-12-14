@@ -72,14 +72,22 @@ public class ReportService {
         ReportStatus status = reportStatusRepository.findByName("MENUNGGU")
                 .orElseThrow(() -> new RuntimeException("Status MENUNGGU not found"));
 
-        ReportCategory category = reportCategoryRepository.findByName(request.getCategory())
-                .orElseThrow(() -> new RuntimeException("Category " + request.getCategory() + " not found"));
+        String categoryName = extractCategoryName(request.getCategory());
+
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            throw new RuntimeException("Category is required");
+        }
+
+        ReportCategory category = reportCategoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new RuntimeException("Category '" + categoryName + "' not found"));
 
         Report report = Report.builder()
                 .title(request.getTitle() != null ? request.getTitle() : "Laporan dari " + user.getFullName())
                 .description(request.getDescription())
                 .category(category)
+                .categoryName(category.getName())
                 .status(status)
+                .statusName(status.getName())
                 .address(request.getAddress())
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
@@ -118,12 +126,27 @@ public class ReportService {
             ReportStatus s = reportStatusRepository.findByName(request.getStatus())
                     .orElseThrow(() -> new RuntimeException("Status not found"));
             report.setStatus(s);
+            report.setStatusName(s.getName());
         }
         if (request.getCategory() != null) {
-            ReportCategory c = reportCategoryRepository.findByName(request.getCategory())
-                    .orElseThrow(() -> new RuntimeException("Category " + request.getCategory() + " not found"));
+            String categoryName = extractCategoryName(request.getCategory());
+
+            ReportCategory c = reportCategoryRepository.findByName(categoryName)
+                    .orElseThrow(() -> new RuntimeException("Category " + categoryName + " not found"));
             report.setCategory(c);
+            report.setCategoryName(c.getName());
         }
+
+        return mapToResponse(reportRepository.save(report));
+    }
+
+    public ReportResponse updateReportStatusById(Integer id, Integer statusId) {
+        Report report = reportRepository.findById(id).orElseThrow(() -> new RuntimeException("Report not found"));
+        ReportStatus status = reportStatusRepository.findById(statusId)
+                .orElseThrow(() -> new RuntimeException("Status not found"));
+
+        report.setStatus(status);
+        report.setStatusName(status.getName());
 
         return mapToResponse(reportRepository.save(report));
     }
@@ -170,13 +193,24 @@ public class ReportService {
         }
     }
 
+    private String extractCategoryName(Object categoryObj) {
+        if (categoryObj instanceof String) {
+            return (String) categoryObj;
+        } else if (categoryObj instanceof java.util.Map) {
+            return (String) ((java.util.Map<?, ?>) categoryObj).get("name");
+        }
+        return null; // Or handle as error/default
+    }
+
     private ReportResponse mapToResponse(Report report) {
         return ReportResponse.builder()
                 .id(report.getId())
                 .title(report.getTitle())
                 .description(report.getDescription())
-                .category(report.getCategory().getName())
-                .status(report.getStatus().getName())
+                .category(report.getCategory() != null ? report.getCategory().getName()
+                        : (report.getCategoryName() != null ? report.getCategoryName() : "Uncategorized"))
+                .status(report.getStatus() != null ? report.getStatus().getName()
+                        : (report.getStatusName() != null ? report.getStatusName() : "Unknown"))
                 .address(report.getAddress())
                 .latitude(report.getLatitude())
                 .longitude(report.getLongitude())
@@ -184,7 +218,7 @@ public class ReportService {
                 .image1(report.getImage1())
                 .image2(report.getImage2())
                 .image3(report.getImage3())
-                .reporterName(report.getUser().getFullName())
+                .reporterName(report.getUser() != null ? report.getUser().getFullName() : "Anonymous")
                 .createdAt(report.getCreatedAt())
                 .updatedAt(report.getUpdatedAt())
                 .build();

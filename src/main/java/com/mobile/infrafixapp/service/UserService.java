@@ -59,6 +59,43 @@ public class UserService {
                                 .build();
         }
 
+        public AuthenticationResponse createTechnician(RegisterRequest request) {
+                // userValidator.validate(request); // Optional: validate if needed for
+                // technician creation
+
+                var role = roleRepository.findByName("Technician")
+                                .orElseThrow(() -> new RuntimeException("Role Technician not initialized"));
+
+                var user = User.builder()
+                                .fullName(request.getFullName())
+                                .email(request.getEmail())
+                                .address(request.getAddress())
+                                .phoneNumber(request.getPhoneNumber())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .postalCode(request.getPostalCode())
+                                .latitude(request.getLatitude())
+                                .longitude(request.getLongitude())
+                                .role(role)
+                                .build();
+
+                repository.save(user);
+                // Technicians might not need a token immediately upon creation,
+                // but we can return one or just success message.
+                // For consistency with AuthResponse:
+                var jwtToken = jwtService.generateToken(user);
+                return AuthenticationResponse.builder()
+                                .status("success")
+                                .message("Technician created successfully.")
+                                .token(jwtToken)
+                                .user(AuthenticationResponse.UserInfo.builder()
+                                                .id_pengguna(user.getId())
+                                                .fullName(user.getFullName())
+                                                .email(user.getEmail())
+                                                .role(user.getRole().getName())
+                                                .build())
+                                .build();
+        }
+
         public AuthenticationResponse authenticate(AuthenticationRequest request) {
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(

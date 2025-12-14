@@ -14,7 +14,7 @@ public class ReportRequest {
     private String fullName;
     private String ktpNumber;
     private java.time.LocalDate incidentDate;
-    private String category;
+    private Object category;
     private String description;
     private String title; // Keeping it as it might be needed or derived
     private String address;

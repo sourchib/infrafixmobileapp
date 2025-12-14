@@ -13,12 +13,14 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final com.mobile.infrafixapp.repository.ReportStatusRepository reportStatusRepository;
     private final com.mobile.infrafixapp.repository.ReportCategoryRepository reportCategoryRepository;
+    private final com.mobile.infrafixapp.repository.UserRepository userRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
         createRoleIfNotFound("Citizen");
-        createRoleIfNotFound("Admin");
-        createRoleIfNotFound("Technician");
+        Role adminRole = createRoleIfNotFound("Admin");
+        Role techRole = createRoleIfNotFound("Technician");
 
         createStatusIfNotFound("MENUNGGU");
         createStatusIfNotFound("DIPROSES");
@@ -29,15 +31,18 @@ public class DataInitializer implements CommandLineRunner {
         createCategoryIfNotFound("KEAMANAN");
         createCategoryIfNotFound("KEBERSIHAN");
         createCategoryIfNotFound("LAINNYA");
+
+        createUserIfNotFound("admin@infrafix.com", "Admin InfraFix", "password", adminRole);
+        createUserIfNotFound("technician@infrafix.com", "Technician InfraFix", "password", techRole);
     }
 
-    private void createRoleIfNotFound(String name) {
-        if (roleRepository.findByName(name).isEmpty()) {
+    private Role createRoleIfNotFound(String name) {
+        return roleRepository.findByName(name).orElseGet(() -> {
             Role role = Role.builder()
                     .name(name)
                     .build();
-            roleRepository.save(role);
-        }
+            return roleRepository.save(role);
+        });
     }
 
     private void createStatusIfNotFound(String name) {
@@ -55,6 +60,18 @@ public class DataInitializer implements CommandLineRunner {
                     .name(name)
                     .build();
             reportCategoryRepository.save(category);
+        }
+    }
+
+    private void createUserIfNotFound(String email, String fullName, String password, Role role) {
+        if (userRepository.findByEmail(email).isEmpty()) {
+            com.mobile.infrafixapp.model.User user = com.mobile.infrafixapp.model.User.builder()
+                    .fullName(fullName)
+                    .email(email)
+                    .password(passwordEncoder.encode(password))
+                    .role(role)
+                    .build();
+            userRepository.save(user);
         }
     }
 }

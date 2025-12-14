@@ -66,6 +66,7 @@ com.mobile.infrafixapp
 ├── dto             # Data Transfer Objects
 │   ├── request     # Request Payloads
 │   └── response    # Response Objects
+├── handler         # Global Exception Handling
 ├── model           # Database Entities (User, Report, Role)
 ├── repository      # JPA Repositories
 ├── security        # JWT Filter & Service
@@ -75,16 +76,32 @@ com.mobile.infrafixapp
 
 ## 🔌 API Endpoints
 
-### Auth
-*   `POST /api/v1/auth/register` - Register new user.
-*   `POST /api/v1/auth/authenticate` - Login & Get Token.
+### 🔐 Otentikasi
+*   `POST /api/v1/auth/register` - Mendaftar akun pengguna baru.
+*   `POST /api/v1/auth/authenticate` - Login pengguna & pembuatan token JWT.
 
-### Reports
-*   `POST /api/v1/reports` - Create Report (Multipart: JSON + Images).
-*   `GET /api/v1/reports/my` - Get logged-in user's reports.
-*   `GET /api/v1/reports` - Get all reports (Admin/Tech).
-*   `PATCH /api/v1/reports/{id}/status` - Update Status (Admin).
-*   `GET /api/v1/reports/categories` - Get Droplist Categories.
+### 👥 Manajemen Pengguna
+*   `DELETE /api/v1/users/{id}` - Menghapus akun pengguna (Khusus Admin).
+
+### 📋 Laporan
+*   `POST /api/v1/reports` - Mengirim laporan baru (Multipart: JSON + Gambar) (Warga).
+*   `GET /api/v1/reports/my` - Mengambil laporan yang dibuat oleh pengguna saat ini (Warga).
+*   `GET /api/v1/reports` - Mengambil semua laporan (Admin & Teknisi).
+*   `PATCH /api/v1/reports/{id}/status` - Memperbarui status laporan (Admin & Teknisi).
+*   `GET /api/v1/reports/categories` - Mengambil semua kategori laporan.
+*   `POST /api/v1/reports/categories` - Menambah kategori laporan baru (Admin).
+
+### 🔔 Notifikasi
+*   `GET /api/v1/notifications` - Mengambil notifikasi pengguna saat ini.
+
+### 💬 Chat (Asisten AI)
+*   `POST /api/v1/chat` - Mengirim pesan ke asisten AI (Gemini).
+
+### 📰 Berita
+*   `GET /api/v1/news/prospects` - Mengambil berita/prospek berdasarkan kategori dan wilayah.
+
+### 📂 Sumber Daya Statis
+*   `GET /uploads/{filename}` - Mengakses gambar yang diunggah.
 
 ## 🏃‍♂️ How to Run
 
