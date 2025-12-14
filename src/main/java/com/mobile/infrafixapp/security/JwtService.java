@@ -17,6 +17,12 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    @org.springframework.beans.factory.annotation.Value("${time.expiration}")
+    private long jwtExpiration;
+
+    @org.springframework.beans.factory.annotation.Value("${token.enable.encrypt}")
+    private String enableEncrypt;
+
     private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
     public String extractUsername(String token) {
@@ -37,7 +43,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -13,6 +13,7 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class NewsService {
 
     private final RestTemplate restTemplate;
@@ -59,6 +60,7 @@ public class NewsService {
                 }
             }
         } catch (Exception e) {
+            log.error("Error calling Gemini API: ", e);
             return "Failed to fetch data from AI: " + e.getMessage();
         }
 
