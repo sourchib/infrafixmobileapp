@@ -59,4 +59,4 @@ jobs:
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
               -e JWT_REFRESH_SECRET="${{ secrets.JWT_REFRESH_SECRET }}" \
-              ${{ secrets.DOCKER_USERNAME }}/infrafix-app
+              ${{ secrets.DOCKER_USERNAME }}/infrafixapp:latest
