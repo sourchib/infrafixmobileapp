@@ -29,4 +29,11 @@ public class UserController {
             @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(userService.authenticate(request));
     }
+
+    @org.springframework.web.bind.annotation.PutMapping("/update/{id}")
+    public ResponseEntity<AuthenticationResponse> updateUser(
+            @org.springframework.web.bind.annotation.PathVariable Integer id,
+            @RequestBody com.mobile.infrafixapp.dto.request.UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
 }

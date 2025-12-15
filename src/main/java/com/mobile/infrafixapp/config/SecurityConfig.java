@@ -29,6 +29,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                                 .requestMatchers("/uploads/**").permitAll()
+                                                .requestMatchers("/api/v1/chat/**").hasAnyAuthority("Citizen", "Admin", "Technician")
                                                 .anyRequest().authenticated())
                                 .sessionManagement(sess -> sess
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

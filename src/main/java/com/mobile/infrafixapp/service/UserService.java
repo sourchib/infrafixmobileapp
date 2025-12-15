@@ -120,4 +120,30 @@ public class UserService {
         public void deleteUser(Integer id) {
                 repository.deleteById(id);
         }
+
+        public AuthenticationResponse updateUser(Integer id, com.mobile.infrafixapp.dto.request.UserUpdateRequest request) {
+                User user = repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+
+                if (request.getFullName() != null) user.setFullName(request.getFullName());
+                if (request.getEmail() != null) user.setEmail(request.getEmail()); // Handling email change might require re-verification
+                if (request.getAddress() != null) user.setAddress(request.getAddress());
+                if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
+                if (request.getPostalCode() != null) user.setPostalCode(request.getPostalCode());
+                if (request.getLatitude() != null) user.setLatitude(request.getLatitude());
+                if (request.getLongitude() != null) user.setLongitude(request.getLongitude());
+
+                repository.save(user);
+
+                return AuthenticationResponse.builder()
+                                .status("success")
+                                .message("Profile updated successfully")
+                                .user(AuthenticationResponse.UserInfo.builder()
+                                                .id_pengguna(user.getId())
+                                                .fullName(user.getFullName())
+                                                .email(user.getEmail())
+                                                .role(user.getRole().getName())
+                                                .build())
+                                .build();
+        }
 }

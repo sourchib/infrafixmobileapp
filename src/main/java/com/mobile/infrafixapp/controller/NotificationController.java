@@ -22,4 +22,10 @@ public class NotificationController {
     public List<NotificationResponse> getNotifications(@AuthenticationPrincipal User user) {
         return notificationService.getUserNotifications(user);
     }
+
+    @org.springframework.web.bind.annotation.PutMapping("/{id}/read")
+    public org.springframework.http.ResponseEntity<Void> markAsRead(@org.springframework.web.bind.annotation.PathVariable Integer id) {
+        notificationService.markNotificationAsRead(id);
+        return org.springframework.http.ResponseEntity.ok().build();
+    }
 }

@@ -36,6 +36,13 @@ public class NotificationService {
                 .build();
     }
 
+    public void markNotificationAsRead(Integer id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+        notification.setRead(true);
+        notificationRepository.save(notification);
+    }
+
     private String calculateRelativeTime(LocalDateTime createdAt) {
         if (createdAt == null)
             return "Unknown";
