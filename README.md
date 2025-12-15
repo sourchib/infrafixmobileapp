@@ -79,6 +79,7 @@ com.mobile.infrafixapp
 ### 🔐 Otentikasi
 *   `POST /api/v1/auth/register` - Mendaftar akun pengguna baru.
 *   `POST /api/v1/auth/authenticate` - Login pengguna & pembuatan token JWT.
+*   `PUT /api/v1/auth/update/{id}` - Memperbarui profil pengguna (Nama, Alamat, Foto, dll).
 
 ### 👥 Manajemen Pengguna
 *   `DELETE /api/v1/users/{id}` - Menghapus akun pengguna (Khusus Admin).
@@ -93,6 +94,7 @@ com.mobile.infrafixapp
 
 ### 🔔 Notifikasi
 *   `GET /api/v1/notifications` - Mengambil notifikasi pengguna saat ini.
+*   `PUT /api/v1/notifications/{id}/read` - Menandai notifikasi telah dibaca.
 
 ### 💬 Chat (Asisten AI)
 *   `POST /api/v1/chat` - Mengirim pesan ke asisten AI (Gemini).
