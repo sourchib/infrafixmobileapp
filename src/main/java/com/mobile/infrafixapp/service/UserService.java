@@ -17,43 +17,133 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final UserValidator userValidator;
+        private final UserRepository repository;
+        private final com.mobile.infrafixapp.repository.RoleRepository roleRepository;
+        private final PasswordEncoder passwordEncoder;
+        private final JwtService jwtService;
+        private final AuthenticationManager authenticationManager;
+        private final UserValidator userValidator;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        userValidator.validate(request);
+        public AuthenticationResponse register(RegisterRequest request) {
+                userValidator.validate(request);
 
-        var user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .address(request.getAddress())
-                .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .postalCode(request.getPostalCode())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
-                .build();
+                var role = roleRepository.findByName("Citizen")
+                                .orElseThrow(() -> new RuntimeException("Role Citizen not initialized"));
 
-        repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
-    }
+                var user = User.builder()
+                                .fullName(request.getFullName())
+                                .email(request.getEmail())
+                                .address(request.getAddress())
+                                .phoneNumber(request.getPhoneNumber())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .postalCode(request.getPostalCode())
+                                .latitude(request.getLatitude())
+                                .longitude(request.getLongitude())
+                                .termsAccepted(request.isTermsAccepted())
+                                .dataUsageAccepted(request.isDataUsageAccepted())
+                                .role(role)
+                                .build();
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()));
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
-    }
+                repository.save(user);
+                var jwtToken = jwtService.generateToken(user);
+                return AuthenticationResponse.builder()
+                                .status("success")
+                                .message("Registrasi berhasil.")
+                                .token(jwtToken)
+                                .user(AuthenticationResponse.UserInfo.builder()
+                                                .id_pengguna(user.getId())
+                                                .fullName(user.getFullName())
+                                                .email(user.getEmail())
+                                                .role(user.getRole().getName())
+                                                .build())
+                                .build();
+        }
+
+        public AuthenticationResponse createTechnician(RegisterRequest request) {
+                // userValidator.validate(request); // Optional: validate if needed for
+                // technician creation
+
+                var role = roleRepository.findByName("Technician")
+                                .orElseThrow(() -> new RuntimeException("Role Technician not initialized"));
+
+                var user = User.builder()
+                                .fullName(request.getFullName())
+                                .email(request.getEmail())
+                                .address(request.getAddress())
+                                .phoneNumber(request.getPhoneNumber())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .postalCode(request.getPostalCode())
+                                .latitude(request.getLatitude())
+                                .longitude(request.getLongitude())
+                                .role(role)
+                                .build();
+
+                repository.save(user);
+                // Technicians might not need a token immediately upon creation,
+                // but we can return one or just success message.
+                // For consistency with AuthResponse:
+                var jwtToken = jwtService.generateToken(user);
+                return AuthenticationResponse.builder()
+                                .status("success")
+                                .message("Technician created successfully.")
+                                .token(jwtToken)
+                                .user(AuthenticationResponse.UserInfo.builder()
+                                                .id_pengguna(user.getId())
+                                                .fullName(user.getFullName())
+                                                .email(user.getEmail())
+                                                .role(user.getRole().getName())
+                                                .build())
+                                .build();
+        }
+
+        public AuthenticationResponse authenticate(AuthenticationRequest request) {
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(
+                                                request.getEmail(),
+                                                request.getPassword()));
+                var user = repository.findByEmail(request.getEmail())
+                                .orElseThrow();
+                var jwtToken = jwtService.generateToken(user);
+                return AuthenticationResponse.builder()
+                                .status("success")
+                                .message("Login berhasil.")
+                                .token(jwtToken)
+                                .user(AuthenticationResponse.UserInfo.builder()
+                                                .id_pengguna(user.getId())
+                                                .fullName(user.getFullName())
+                                                .email(user.getEmail())
+                                                .role(user.getRole().getName())
+                                                .build())
+                                .build();
+        }
+
+        public void deleteUser(Integer id) {
+                repository.deleteById(id);
+        }
+
+        public AuthenticationResponse updateUser(Integer id, com.mobile.infrafixapp.dto.request.UserUpdateRequest request) {
+                User user = repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+
+                if (request.getFullName() != null) user.setFullName(request.getFullName());
+                if (request.getEmail() != null) user.setEmail(request.getEmail()); // Handling email change might require re-verification
+                if (request.getAddress() != null) user.setAddress(request.getAddress());
+                if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
+                if (request.getPostalCode() != null) user.setPostalCode(request.getPostalCode());
+                if (request.getLatitude() != null) user.setLatitude(request.getLatitude());
+                if (request.getLongitude() != null) user.setLongitude(request.getLongitude());
+
+                repository.save(user);
+
+                return AuthenticationResponse.builder()
+                                .status("success")
+                                .message("Profile updated successfully")
+                                .user(AuthenticationResponse.UserInfo.builder()
+                                                .id_pengguna(user.getId())
+                                                .fullName(user.getFullName())
+                                                .email(user.getEmail())
+                                                .role(user.getRole().getName())
+                                                .build())
+                                .build();
+        }
 }

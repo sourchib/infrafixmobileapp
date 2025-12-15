@@ -1,6 +1,5 @@
 package com.mobile.infrafixapp.dto.request;
 
-import com.mobile.infrafixapp.model.ReportCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,15 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReportRequest {
+public class UserUpdateRequest {
     private String fullName;
-    private String ktpNumber;
-    private java.time.LocalDate incidentDate;
-    private Object category;
-    private String description;
-    private String title; // Keeping it as it might be needed or derived
+    private String email;
     private String address;
+    private String phoneNumber;
+    private String postalCode;
     private Double latitude;
     private Double longitude;
-    private boolean isDataValid;
 }
