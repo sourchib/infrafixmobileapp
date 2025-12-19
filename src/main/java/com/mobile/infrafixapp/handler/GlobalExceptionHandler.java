@@ -20,9 +20,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Map<String, String>> handleAuthenticationException(AuthenticationException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Authentication failed: " + ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("success", false);
+        error.put("error-code", "X01001");
+        error.put("error", "Otentikasi Bermasalah");
+        error.put("status", HttpStatus.UNAUTHORIZED.value());
+        error.put("timestamp", java.time.Instant.now().toString());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
