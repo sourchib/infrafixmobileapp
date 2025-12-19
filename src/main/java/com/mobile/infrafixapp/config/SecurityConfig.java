@@ -29,7 +29,8 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                                 .requestMatchers("/uploads/**").permitAll()
-                                                .requestMatchers("/api/v1/chat/**").hasAnyAuthority("Citizen", "Admin", "Technician")
+                                                .requestMatchers("/api/v1/chat/**")
+                                                .hasAnyAuthority("Citizen", "Admin", "Technician")
                                                 .anyRequest().authenticated())
                                 .sessionManagement(sess -> sess
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -42,9 +43,10 @@ public class SecurityConfig {
         @Bean
         public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
                 org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-                configuration.setAllowedOrigins(java.util.List.of("*")); // Allow all for dev
+                configuration.setAllowedOriginPatterns(java.util.List.of("*")); // Allow all using patterns
                 configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(java.util.List.of("*"));
+                configuration.setAllowCredentials(true);
                 org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", configuration);
                 return source;
